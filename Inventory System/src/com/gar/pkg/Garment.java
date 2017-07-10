@@ -1,10 +1,8 @@
 package com.gar.pkg;
 
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import com.mysql.jdbc.Driver;
 
 public class Garment {
 
@@ -17,7 +15,7 @@ public class Garment {
 	public Date checkoutDate;
 	public String status;
 	public long age;
-	private Connection connection;
+	private Connection connection = DBConnection.connection;
 
 	public Garment() {
 		garmentID = 0;
@@ -44,45 +42,69 @@ public class Garment {
 		age = days;
 	}
 
-
 	// Add a garment to the database
-	public void add(Garment garment) throws SQLException {
-		garment.garmentID = getNextUnique();
-		Statement statement = connection.createStatement();
-		ResultSet rs = statement.executeQuery(
-				"INSERT INTO garments (garmentID, type, size, color, timePeriod, createdDate, checkoutDate, status) "
-						+ "VALUES (" + garment.garmentID + ", " + garment.type + ", " + garment.size + ", "
-						+ garment.color + ", " + garment.timePeriod + ", " + garment.createdDate + ", "
-						+ garment.checkoutDate + ", " + garment.status + ")");
+	public void add(Garment garment) {
+		try {
+			garment.garmentID = getNextUnique();
+			garment.createdDate = new Date();
+			garment.status = "In";
+			garment.checkoutDate = null;
+			Statement statement = connection.createStatement();
+			int rs = statement.executeUpdate(
+					"INSERT INTO garments (garmentID, type, size, color, timePeriod, createdDate, checkoutDate, status) "
+							+ "VALUES (" + garment.garmentID + ", '" + garment.type + "', '" + garment.size + "', '"
+							+ garment.color + "', '" + garment.timePeriod + "', current_date(), NULL, '"
+							+ garment.status + "')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Delete a garment from the database
-	public void delete(Garment garment) throws SQLException {
-		Statement statement = connection.createStatement();
-		ResultSet rs = statement.executeQuery("DELETE FROM garments WHERE garmentID = " + garment.garmentID);
+	public void delete(int garmentID) {
+		try {
+			Statement statement = connection.createStatement();
+			int rs = statement.executeUpdate("DELETE FROM garments WHERE garmentID = " + garmentID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Edit a garment in the database
-	public void edit(Garment garment) throws SQLException {
-		Statement statement = connection.createStatement();
-		ResultSet rs = statement.executeQuery("UPDATE garments SET garmentID = " + garment.garmentID + ", type = "
-				+ garment.type + ", size = " + garment.size + ",  color = " + garment.color + ", timePeriod = "
-				+ garment.timePeriod + ", createdDate = " + garment.createdDate + ", checkoutDate = "
-				+ garment.checkoutDate + ", status = " + garment.status + " WHERE garmentID = " + garment.garmentID);
+	public void edit(Garment garment) {
+		try {
+			Statement statement = connection.createStatement();
+			int rs = statement.executeUpdate("UPDATE garments SET type = '" + garment.type + "', size = '"
+					+ garment.size + "',  color = '" + garment.color + "', timePeriod = '" + garment.timePeriod
+					+ "' WHERE garmentID = " + garment.garmentID);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	// check in a garment to inventory
-	public void checkIn(Garment garment) throws SQLException {
-		Statement statement = connection.createStatement();
-		ResultSet rs = statement
-				.executeQuery("UPDATE garments SET status = 'In' WHERE garmentID = " + garment.garmentID);
+	public void checkIn(int garmentID) {
+		try {
+			Statement statement = connection.createStatement();
+			int rs = statement.executeUpdate(
+					"UPDATE garments SET status = 'In', checkoutDate = NULL WHERE garmentID = " + garmentID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// check out a garment from inventory
-	public void checkOut(Garment garment) throws SQLException {
-		Statement statement = connection.createStatement();
-		ResultSet rs = statement
-				.executeQuery("UPDATE garments SET status = 'Out' WHERE garmentID = " + garment.garmentID);
+	public void checkOut(int garmentID) {
+		try {
+			Statement statement = connection.createStatement();
+			int rs = statement.executeUpdate(
+					"UPDATE garments SET status = 'Out', checkoutDate = current_date() WHERE garmentID = " + garmentID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	// Get the amount of days the garment has been in the inventory
@@ -92,25 +114,12 @@ public class Garment {
 		return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 
-	// Connect to the database
-	private void connectToDB() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test", "root", "root");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	//Get the next unique primary key
-	private int getNextUnique() throws SQLException {
+	// Get the next unique primary key
+	public int getNextUnique() throws SQLException {
 		int nextUnique = 0;
 		Statement statement = connection.createStatement();
-		ResultSet rs = statement
-				.executeQuery("SELECT MAX(garmentID) FROM garments");
-		
+		ResultSet rs = statement.executeQuery("SELECT MAX(garmentID) garmentID FROM garments");
+
 		while (rs.next()) {
 			nextUnique = rs.getInt("garmentID") + 1;
 		}

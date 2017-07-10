@@ -4,6 +4,7 @@
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.DriverManager" %>
 <%@ page import="com.gar.pkg.Garment"%>
+<%@ page import="com.gar.pkg.DBConnection"%>
 <!DOCTYPE HTML">
 <html>
 <head>
@@ -22,15 +23,16 @@
 		<th>Age (in days)</th>
 		<th>Checkout Date (YYYY-MM-DD)</th>
 		<th>Status</th>
+		<th>
+			<form action="new.jsp">
+	            <input type="submit" value="Add New">
+	        </form>
+        <th>
    </tr>
    <%try
    {
-       Class.forName("com.mysql.jdbc.Driver");
-       String url="jdbc:mysql://127.0.0.1:3306/test";
-       String username="root";
-       String password="root";
-       String query="SELECT * FROM garments ORDER BY garmentID";
-       Connection conn=DriverManager.getConnection(url, username, password);
+	   Connection conn = DBConnection.connection;
+	   String query="SELECT * FROM garments ORDER BY garmentID";
        Statement stmt=conn.createStatement();
        ResultSet rs=stmt.executeQuery(query);
        while(rs.next())
@@ -53,14 +55,38 @@
        <td><%out.println(garment.age); %></td>
        <td><%out.println(garment.checkoutDate); %></td>
        <td><%out.println(garment.status); %></td>
+       <td>
+            <form action="IndexServlet" method="POST">
+                <input type="hidden" name="garmentID" value=<%=garment.garmentID%> />
+                <input type="hidden" name="status" value=<%=garment.status%> />
+                <input type="submit" value="Check In/Out">
+            </form>
+        </td>
+        <td>
+            <form action="edit.jsp">
+                <input type="hidden" name="garmentID" value=<%=garment.garmentID%>/>
+                <input type="hidden" name="type" value=<%=garment.type%>/>
+                <input type="hidden" name="size" value=<%=garment.size%>/>
+                <input type="hidden" name="color" value=<%=garment.color%>/>
+                <input type="hidden" name="timePeriod" value=<%=garment.timePeriod%>/>
+                <input type="hidden" name="age" value=<%=garment.age%>/>
+                <input type="hidden" name="checkoutDate" value=<%=garment.checkoutDate%>/>
+                <input type="hidden" name="status" value=<%=garment.status%>/>
+                <input type="submit" value="Edit">
+            </form>
+        </td>
+        <td>
+            <form action="IndexServlet" method="POST">
+                <input type="hidden" name="garmentID" value=<%=garment.garmentID%>/>
+                <input type="hidden" name="action" value="delete"/>
+                <input type="submit" value="Delete">
+            </form>
+        </td>
     </tr>
 
    <%}%>
    </table>
-   <%rs.close();
-        stmt.close();
-        conn.close();
-   }
+   <%}
    catch(Exception e)
    {
         e.printStackTrace();
