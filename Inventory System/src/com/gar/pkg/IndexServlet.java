@@ -1,7 +1,6 @@
 package com.gar.pkg;
 
 import java.io.*;
-import java.sql.SQLException;
 import com.gar.pkg.Garment;
 
 import javax.servlet.ServletException;
@@ -35,10 +34,10 @@ public class IndexServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		int garmentID = Integer.parseInt(request.getParameter("garmentID").replaceAll("/", ""));
 		Garment garment = new Garment();
-		
-		if(action != null && action.equalsIgnoreCase("delete")) {
+
+		if (action != null && action.equalsIgnoreCase("delete")) {
 			garment.delete(garmentID);
-		}else {
+		} else {
 			if (status.equalsIgnoreCase("In")) {
 				garment.checkOut(garmentID);
 			} else {

@@ -6,21 +6,18 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>Inventory Management System</title>
 	</head>
-	<%
-	int garmentID = Integer.parseInt(request.getParameter("garmentID").replaceAll("/", ""));
+	<% int garmentID = Integer.parseInt(request.getParameter("garmentID").replaceAll("/", ""));
 	String type = request.getParameter("type").replaceAll("/", "");
 	String size = request.getParameter("size").replaceAll("/", "");
 	String color = request.getParameter("color").replaceAll("/", "");
 	String timePeriod = request.getParameter("timePeriod").replaceAll("/", "");
 	int age = Integer.parseInt(request.getParameter("age").replaceAll("/", ""));
 	String checkoutDate = request.getParameter("checkoutDate").replaceAll("/", "");
-	String status = request.getParameter("status").replaceAll("/", "");
-	%>
+	String status = request.getParameter("status").replaceAll("/", ""); %>
 	<body>
 		<h1>Edit Existing Garment</h1>
 		<FORM METHOD=POST ACTION="EditServlet">
-			<h3>Garment ID: <%out.println(garmentID);%>
-			</h3>
+			<h3>Garment ID: <%out.println(garmentID);%></h3>
 			<h3>Type: <%out.println(type);%>
 				<select name="type">
 		    		<option value="Hat">Hat</option>
@@ -63,12 +60,9 @@
 		    		<option value="World War 2">World War 2</option>
 		  		</select>
 	  		</h3>
-	  		<h3>Age: <%out.println(age);%>
-	  		</h3>
-	  		<h3>Checkout Date: <%out.println(checkoutDate);%>
-	  		</h3>
-	  		<h3>Status: <%out.println(status);%>
-	  		</h3>
+	  		<h3>Age: <%out.println(age);%></h3>
+	  		<h3>Checkout Date: <%out.println(checkoutDate);%></h3>
+	  		<h3>Status: <%out.println(status);%></h3>
 	  		<input type="hidden" name="garmentID" value=<%=garmentID%>/>
 		<INPUT TYPE=SUBMIT value="Save">
 		<button type="button" name="back" onclick="history.back()">Back</button>

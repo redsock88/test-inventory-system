@@ -1,7 +1,6 @@
 package com.gar.pkg;
 
 import java.io.*;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,18 +14,20 @@ import javax.servlet.http.HttpServletResponse;
 public class EditServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public EditServlet() {
-        super();
-    }  
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public EditServlet() {
+		super();
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		Garment garment = new Garment();
 		garment.garmentID = Integer.parseInt(request.getParameter("garmentID").replaceAll("/", ""));
 		garment.type = request.getParameter("type");
