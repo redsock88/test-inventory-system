@@ -1,6 +1,6 @@
 # test-inventory-system
 
-A sample application to show off my coding skills.
+A sample application to show off my coding skills.  I used my time to focus on functionality and debugging, so the aesthetic design is basic.
 
 Developed in Eclipse using Apache Tomcat and MySQL.
 
